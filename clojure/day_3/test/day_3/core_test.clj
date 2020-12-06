@@ -14,6 +14,6 @@
     ))
 
 (deftest test-get-col-count
-  (testing "Check that we get correct amount of rows"
+  (testing "Check that we get correct amount of cols"
     (is (= (get-col-count ["abcdef" "defghi" "ghijkl"]) 6))
     ))

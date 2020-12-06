@@ -1,5 +1,5 @@
 [package]
-name = "advocode"
+name = "day_2"
 version = "0.1.0"
 authors = ["Juha Iso-Sipilä <juha.iso-sipila@iki.fi>"]
 edition = "2018"
