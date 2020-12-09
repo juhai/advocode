@@ -22,12 +22,9 @@
         char-maps (map frequencies joined-answers)
         valid-maps (map get-matching-count char-maps group-counts)
         ]
-    (println valid-maps)
-    (println char-maps)
     (reduce + valid-maps)
     )
   )
-
 
 (defn -main
   "I don't do a whole lot ... yet."
