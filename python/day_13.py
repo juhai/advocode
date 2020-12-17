@@ -1,6 +1,8 @@
 import itertools
 from dataclasses import dataclass
 
+import contexttimer as contexttimer
+
 
 @dataclass
 class Bus:
@@ -30,10 +32,11 @@ def main2():
         )
     ]
 
-    seq = itertools.count(0, buses[0].id)
-    for bus in buses[1:]:
-        seq = get_new_seq(bus.id, bus.delay, seq)
-    print(f"You need to wait for {next(seq)} minutes")
+    with contexttimer.Timer() as t:
+        seq = itertools.count(0, buses[0].id)
+        for bus in buses[1:]:
+            seq = get_new_seq(bus.id, bus.delay, seq)
+        print(f"You need to wait for {next(seq)} minutes, but calculation took only {t.elapsed} seconds")
 
 
 def get_new_seq(bus_id, bus_delay, seq):
