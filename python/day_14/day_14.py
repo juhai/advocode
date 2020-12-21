@@ -1,8 +1,10 @@
+import itertools
 import re
 from dataclasses import dataclass
 from typing import List, Tuple
 
 instruction_re = re.compile(r'^mem\[(\d+)\] = (\d+)$')
+
 
 @dataclass
 class Program:
@@ -12,7 +14,16 @@ class Program:
     writes: List[Tuple[int, int]]
 
     def __str__(self):
-        return f'Program(mask={self.mask}, one_mask={bin(self.one_mask)}, zero_mask={bin(self.zero_mask)}, writes={self.writes}'
+        return (
+            f'Program(mask={self.mask}, one_mask={bin(self.one_mask)}, ' +
+            f'zero_mask={bin(self.zero_mask)}, writes={self.writes}'
+        )
+
+
+@dataclass
+class MaskedWrite:
+    address_with_mask: str
+    value: int
 
 
 def read_data(filename):
@@ -28,7 +39,8 @@ def read_data(filename):
                     start = False
                     continue
                 programs.append(Program(
-                    mask=mask, one_mask=get_one_mask(mask), zero_mask=get_zero_mask(mask), writes=current_writes))
+                    mask=mask, one_mask=get_one_mask(mask), zero_mask=get_zero_mask(mask), writes=current_writes
+                ))
                 mask = line.strip().split()[-1]
                 current_writes = []
             if line.startswith('mem'):
@@ -60,5 +72,50 @@ def main():
     print(f'Result is {sum(memory.values())}')
 
 
+def merge_with_mask(address: int, mask: str) -> str:
+    bin_address = f'{address:036b}'
+    merged_with_mask = ''.join(
+        'X' if m == 'X' else '1' if m == '1' else a for a, m in zip(bin_address, mask))
+    return merged_with_mask
+
+
+def main2():
+    programs = read_data('day_14_input.txt')
+    masked_writes = [
+        MaskedWrite(
+            address_with_mask=merge_with_mask(write[0] | program.one_mask, program.mask),
+            value=write[1]
+        )
+        for program in programs for write in program.writes
+    ]
+
+    memory = {}
+    for write in masked_writes:
+        all_addresses = get_all_addresses(write.address_with_mask)
+        for address in all_addresses:
+            memory[address] = write.value
+
+    print(f"Result is: {sum(memory.values())}")
+
+
+def get_all_addresses(mask: str) -> List[int]:
+    """Returns list of addresses that have the mask applied"""
+    masked_addresses = []
+    queue = [('', mask)]  # Prefix, mask
+    while queue:
+        done, remaining = queue.pop(0)
+        if not remaining:  # no mask left
+            masked_addresses.append(int(done, 2))
+            continue
+        if remaining[0] == 'X':
+            queue.append((done + '1', remaining[1:]))
+            queue.append((done + '0', remaining[1:]))
+        else:
+            queue.append((done + remaining[0], remaining[1:]))
+
+    return masked_addresses
+
+
 if __name__ == '__main__':
     main()
+    main2()
