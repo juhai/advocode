@@ -44,6 +44,7 @@
         (println "Test round" (process-numbers data 2020)))
       )
     (println "Official result for part I is" (process-numbers part1-data 2020))
+    (println "Official result for part II is" (process-numbers part1-data 30000000))
     )
 
   )
