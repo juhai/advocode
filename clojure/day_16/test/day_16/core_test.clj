@@ -4,4 +4,6 @@
 
 (deftest a-test
   (testing "FIXME, I fail."
-    (is (= 0 1))))
+    (is (= (rules-that-match-all-fields [1 2 3]
+           {:a (set [1 2]) :b (set [2 3 4])})))
+    ))
