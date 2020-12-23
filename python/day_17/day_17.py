@@ -18,6 +18,7 @@ class Point(NamedTuple):
     x: int
     y: int
     z: int
+    w: int
 
 
 def get_points(filename: str) -> Set[Point]:
@@ -26,7 +27,7 @@ def get_points(filename: str) -> Set[Point]:
         for row, line in enumerate(i):
             for col, value in enumerate(line.strip()):
                 if value == '#':
-                    points.append(Point(x=col, y=row, z=0))
+                    points.append(Point(x=col, y=row, z=0, w=0))
     return set(points)
 
 
@@ -80,9 +81,10 @@ class PocketSpace:
         for x in [point.x-1, point.x, point.x+1]:
             for y in [point.y-1, point.y, point.y+1]:
                 for z in [point.z-1, point.z, point.z+1]:
-                    n_point = Point(x=x, y=y, z=z)
-                    if n_point in self.active_points:
-                        active_count += 1
+                    for w in [point.w-1, point.w, point.w+1]:
+                        n_point = Point(x=x, y=y, z=z, w=w)
+                        if n_point in self.active_points:
+                            active_count += 1
         if point in self.active_points:
             active_count -= 1
         return active_count
@@ -98,9 +100,10 @@ class PocketSpace:
         for x in [point.x-1, point.x, point.x+1]:
             for y in [point.y-1, point.y, point.y+1]:
                 for z in [point.z-1, point.z, point.z+1]:
-                    n_point = Point(x=x, y=y, z=z)
-                    if point != n_point:
-                        neighbours.append(n_point)
+                    for w in [point.w-1, point.w, point.w+1]:
+                        n_point = Point(x=x, y=y, z=z, w=w)
+                        if point != n_point:
+                            neighbours.append(n_point)
         return neighbours
 
 
