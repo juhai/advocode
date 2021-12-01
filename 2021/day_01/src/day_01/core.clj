@@ -10,7 +10,6 @@
 (defn count-increase-in-threes
   [depths]
   (let [sums-of-three (map (partial reduce +) (partition 3 1 depths))]
-    (println sums-of-three)
     (count
      (filter (fn [x] (> (second x) (first x)))
              (partition 2 1 sums-of-three)))))
