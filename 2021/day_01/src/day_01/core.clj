@@ -13,7 +13,7 @@
      (count-increase sums-of-three)))
 
 (defn -main
-  "Advent of code 2021 day "
+  "Advent of code 2021 day 1"
   [& args]
   (let [file-content (slurp "input.txt")
         lines (clojure.string/split file-content #"\n")
